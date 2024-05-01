@@ -122,27 +122,135 @@ function readLine() {
 
 function cookies(k, A) {
   // Write your code here
-  // Sort array
-  // Remove first 2 elements
-  // Do the math
-  // Add element back
-  // Repeat
+  // Initial Check to Determine if moves can or need to be made
+  if (A.length < 1 || Math.min(...A) >= k) {
+    return 0;
+  }
+
+  let priorityQue = MinHeap(A);
   let count = 0;
 
-  while (Math.min(...A) < k) {
-    if (A.length < 2 && Math.min(...A) < k) {
-      return -1;
-    }
-    A.sort((a, b) => a - b);
-    let lowestVals = A.slice(0, 2);
-    let newNumber = A[0] + 2 * A[1];
-    let newArray = A.slice(2, A.length);
-    newArray.push(newNumber);
-    A = [...newArray];
+  /*
+   * While loop for as long as we have 2 or more items in que
+   * and the smallest item (head) is less thank k
+   */
+  while (priorityQue.size() > 1 && priorityQue.peek() < k) {
+    let firstCookie = priorityQue.extractMin();
+    let secondCookie = priorityQue.extractMin();
+
+    let newCookie = firstCookie + 2 * secondCookie;
+    priorityQue.insert(newCookie);
+
     count++;
   }
 
-  return count;
+  priorityQue.peek() >= k ? count : -1;
+}
+
+class MinHeap {
+  constructor(arr = []) {
+    this.heap = [];
+    arr.forEach((element) => this.insert(element));
+  }
+
+  size() {
+    return this.heap.length;
+  }
+
+  insert(item) {
+    this.heap.push(item);
+    this.bubbleUp();
+  }
+
+  bubbleUp() {
+    // Start with currentIndex as the very last item in the heap
+    let currentIndex = this.size() - 1;
+    while (currentIndex > 0) {
+      // Standard formular for finding parent index in a heap/priority queue
+      let parentIndex = (currentIndex - 1) / 2;
+
+      // If item at parent index is smaller than child index
+      // then we are correctly ordered by size from smallest to largest and move on
+      if (this.heap[parentIndex] <= this.heap[currentIndex]) break;
+
+      // Otherwise we switch the lcoation of this items in the heap
+      [this.heap[parentIndex], this.heap[currentIndex]] = [
+        this.heap[currentIndex],
+        this.heap[parentIndex],
+      ];
+
+      // Set current index equal to parent index to continue working back through queue
+      currentIndex = parentIndex;
+    }
+  }
+
+  // ruturns the value of the head of the heap, which should be the lowest value
+  peek() {
+    return this.heap[0];
+  }
+
+  // Removes and returns the smallest value in the array, which is the head
+  extractMin() {
+    let min = this.heap[0];
+    let last = this.heap.pop();
+
+    // Sets the head of the heap to the last value and then calls sinkDown to reorder the heap
+    if (this.size() > 0) {
+      this.heap[0] = last;
+      this.sinkDown();
+    }
+
+    return min;
+  }
+
+  // Reorganizes the heap to be ordered from least to greatest
+  sinkDown() {
+    let currentIndex = 0;
+    let length = this.size();
+    let element = this.heap[0];
+
+    // Continues until it reaches a break statement
+    while (true) {
+      let leftChildIndex = 2 * currentIndex + 1;
+      let rightChildIndex = 2 * currentIndex + 2;
+      let leftChild, rightChild;
+      let swap = null;
+
+      // If leftChildIndex is >= length, its outside the heap and thus doesnt exist
+      if (leftChildIndex < length) {
+        // Set leftChild equal to the item at the leftChildIndex
+        leftChild = this.heap[leftChildIndex];
+        // If leftChild < our current element, set swap equal to leftChildIndex
+        if (leftChild < element) swap = leftChildIndex;
+      }
+
+      // If rightChildIndex is >= length, its outside the heap and thus doesnt exist
+      if (rightChildIndex < length) {
+        rightChild = this.heap[rightChildIndex];
+
+        /* 
+        Check swap, if null and rightChild < our current element, then left child was in proper order, but we gotta swap our current and the rightChild 
+        OR
+        If its NOT null and rightChild is less than leftChild, we was gonna swap with leftChild, but rightChild is even less, so swap it to this position
+        */
+        if (
+          (swap === null && rightChild < element) ||
+          (swap !== null && rightChild < leftChild)
+        )
+          swap = rightChildIndex;
+      }
+
+      // This will end the loop when we have determined we are in correct ordr
+      if (swap === null) break;
+
+      // Else we set the item at the currentIndex equal to the item we determined to swap,
+      // We set the item at the swap position equal to our current element
+      // We set our currentIndex equal to the swap index and continue our loop
+      this.heap[currentIndex] = this.heap[swap];
+      this.heap[swap] = element;
+      currentIndex = swap;
+    }
+  }
 }
 
 function main() {
@@ -166,13 +274,27 @@ function main() {
   ws.end();
 }
 
+// OLD ATTEMPT:
+/*
+  // Sort array
+  // Remove first 2 elements
+  // Do the math
+  // Add element back
+  // Repeat
+  let count = 0;
 
-    bubbleUp() {
-        let currentIdx = this.size() - 1;
-        while (currentIdx > 0) {
-            const parentIdx = Math.floor((currentIdx - 1) / 2);
-            if (this.heap[parentIdx] <= this.heap[currentIdx]) break;
-            [this.heap[parentIdx], this.heap[currentIdx]] = [this.heap[currentIdx], this.heap[parentIdx]];
-            currentIdx = parentIdx;
-        }
+  while (Math.min(...A) < k) {
+    if (A.length < 2 && Math.min(...A) < k) {
+      return -1;
     }
+    A.sort((a, b) => a - b);
+    let lowestVals = A.slice(0, 2);
+    let newNumber = A[0] + 2 * A[1];
+    let newArray = A.slice(2, A.length);
+    newArray.push(newNumber);
+    A = [...newArray];
+    count++;
+  }
+
+  return count;
+*/
