@@ -92,6 +92,7 @@ function legoBlocks(height, width) {
   let unstablePossibilies = [0n, 0n];
 
   /*
+  This combines "dynamic programming" and "combinatroial principles"
    We gradually fill up the unstablePossibilities array, by moving the 
         vertical line to the right via changing the leftPartWidth, and by calculating 
         the number of possible stable (unbroken) walls on the left side of the vertical line 
@@ -161,6 +162,8 @@ function legoBlocks(height, width) {
     exponent = 2 / 2 => 1
     exponent 1 is odd:
     result = 2 * 16 = 32
+    Look up: exponentiation by squaring
+    TLDR: Square the base and divide the exponent by 2 wil we get the answer
 */
 function calculateModularPower(base, exponent, mod) {
   let result = 1n;
