@@ -35,16 +35,16 @@ var jump = function (nums) {
   return jumps;
 };
 
-let case1 = jump([2, 3, 1, 1, 4]);
-let case2 = jump([2, 3, 0, 1, 4]);
-let case3 = jump([10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 1, 0]);
-let case4 = jump([1, 1, 1, 1]);
-let case5 = jump([9, 8, 2, 2, 0, 2, 2, 0, 4, 1, 5, 7, 9, 6, 6, 0, 6, 5, 0, 5]);
-let case6 = jump([0]);
+// let case1 = jump([2, 3, 1, 1, 4]);
+// let case2 = jump([2, 3, 0, 1, 4]);
+// let case3 = jump([10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 1, 0]);
+// let case4 = jump([1, 1, 1, 1]);
+// let case5 = jump([9, 8, 2, 2, 0, 2, 2, 0, 4, 1, 5, 7, 9, 6, 6, 0, 6, 5, 0, 5]);
+// let case6 = jump([0]);
 
-console.log("case1: " + case1);
-console.log("case2: " + case2);
-console.log("case3: " + case3);
-console.log("case4: " + case4);
-console.log("case5: " + case5);
-console.log("case6: " + case6);
+// console.log("case1: " + case1);
+// console.log("case2: " + case2);
+// console.log("case3: " + case3);
+// console.log("case4: " + case4);
+// console.log("case5: " + case5);
+// console.log("case6: " + case6);
