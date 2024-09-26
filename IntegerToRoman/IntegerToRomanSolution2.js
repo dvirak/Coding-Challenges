@@ -25,4 +25,14 @@ var intToRoman = function (num) {
     IV: 4,
     I: 1,
   };
+
+  let numString = "";
+
+  for (const i of Object.keys(romanNums)) {
+    let q = Math.floor(num / romanNums[i]);
+    num -= q * romanNums[i];
+    numString += i.repeat(q);
+  }
+
+  return numString;
 };
