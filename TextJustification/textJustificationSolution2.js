@@ -34,7 +34,7 @@ var fullJustify = function (words, maxWidth) {
   }
 
   // Once we exit the loop, our current array will be the last line, so assign it
-  let lastLine = currentArray.join("");
+  let lastLine = currentArray.join(" ");
 
   // Then add spaces to the end of it so its left justified
   while (lastLine.length < maxWidth) {
