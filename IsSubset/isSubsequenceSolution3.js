@@ -1,3 +1,5 @@
+// This solution actually uses the two point technique, which is the most efficient way
+
 /**
  * @param {string} s
  * @param {string} t
