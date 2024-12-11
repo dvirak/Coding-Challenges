@@ -18,7 +18,7 @@ var findSubstring = function (s, words) {
   for (let i = 0; i < s.length; i++) {
     // console.log("FIRST FOR")
     let currentWord = s.slice(i, i + wordLength);
-    console.log("CURRENT WORD: " + currentWord);
+    // console.log("CURRENT WORD: " + currentWord);
     let wordsToMatch = [...words];
     //   console.log("WORDS TO MATCH AFTER NEW i")
     //   console.log(wordsToMatch)
