@@ -1,68 +1,69 @@
-// Another solution with map nad sliding window, supposed to be more efficient
+// Rewritten code for finding all starting indices of substring concatenations
+// Input: s (string), words (array of strings)
+// Output: Array of starting indices
 
-/**
- * @param {string} s
- * @param {string[]} words
- * @return {number[]}
- */
-var findSubstring = function (s, words) {
-  let result = [];
-  const wordLength = words[0].length;
+function findSubstring(s, words) {
+  // Edge case: if the input is invalid, return an empty array
+  if (!s || words.length === 0) return [];
+
+  // Initialize variables
+  const wordLength = words[0].length; // Each word has the same length
   const totalWords = words.length;
-  const sLength = s.length;
-  const slidingWindow = wordLength * totalWords;
-  if (slidingWindow > sLength) return result;
-
+  const slidingWindow = totalWords * wordLength; // Total window size needed
   const wordCountMap = new Map();
-  for (let word of words) {
+
+  // Create a map to store the count of each word in 'words'
+  for (const word of words) {
     wordCountMap.set(word, (wordCountMap.get(word) || 0) + 1);
   }
 
-  let memo = new Array(sLength).fill(false);
-  for (let i = 0; i <= sLength - slidingWindow; i++) {
-    if (memo[i]) continue; // Why? How would there be a memo[i] thats true?
-    let substring = s.substring(i, i + wordLength);
-    let wCount = wordCountMap.get(substring);
-    if (wCount === undefined) continue; // So checking to see if the substring is even contained in our wordCount map, and continuing if its not?
+  const result = []; // To store the starting indices of valid substrings
 
-    let curWordMap = new Map();
-    let curIdx = i,
-      startIdx = i,
-      counter = 0,
-      curCount;
-    do {
-      curCount = (curWordMap.get(substring) || 0) + 1;
-      memo[curIdx] = true;
-      if (curCount > wCount) {
-        for (let j = startIdx; j < curIdx; j += wordLength) {
-          let tmpStr = s.substring(j, Math.min(j + wordLength, sLength)); // Why do we need to use min here? Shouldnt we just use wordLength? Maybe because j + wordLength could go beyond the sLength so we would be going beyond our s?
-          // Why are we taking this substring didnt we already do that in line 24?
-          if (tmpStr === substring) {
-            startIdx = j + wordLength;
-            break; // Why do we have a break here? Wouldnt we just naturally increase the j by wordLength at the end of each loop?
-          } else {
-            curWordMap.set(tmpStr, curWordMap.get(tmpStr) - 1);
-            counter--; // ? WhaT ?
-          }
+  // Loop through all possible starting points within the word length
+  for (let i = 0; i < wordLength; i++) {
+    let startIdx = i; // Start of the current window
+    let curIdx = i; // Current index in the window
+    let counter = 0; // Count of valid words in the current window
+    const curWordMap = new Map(); // To track words in the current window
+
+    while (curIdx + wordLength <= s.length) {
+      // Extract the next word in the sliding window
+      const substring = s.substring(curIdx, curIdx + wordLength);
+
+      if (wordCountMap.has(substring)) {
+        // Update the count of the word in the current window
+        curWordMap.set(substring, (curWordMap.get(substring) || 0) + 1);
+        counter++;
+
+        // If the word appears more than expected, shrink the window
+        while (curWordMap.get(substring) > wordCountMap.get(substring)) {
+          const tmpStr = s.substring(startIdx, startIdx + wordLength);
+          curWordMap.set(tmpStr, curWordMap.get(tmpStr) - 1);
+          counter--;
+          startIdx += wordLength; // Move the start of the window forward
+        }
+
+        // If all words are matched, record the start index
+        if (counter === totalWords) {
+          result.push(startIdx);
+
+          // Remove the leftmost word to continue searching for other matches
+          const tmpStr = s.substring(startIdx, startIdx + wordLength);
+          curWordMap.set(tmpStr, curWordMap.get(tmpStr) - 1);
+          counter--;
+          startIdx += wordLength;
         }
       } else {
-        curWordMap.set(substring, curCount);
-        counter++;
+        // Reset everything if the word is invalid
+        curWordMap.clear();
+        counter = 0;
+        startIdx = curIdx + wordLength; // Move start index to the next segment
       }
 
-      if (counter === totalWords) {
-        result.push(startIdx);
-        let tmpStr = s.substring(startIdx, startIdx + wordLength);
-        startIdx += wordLength;
-        curWordMap.set(tmpStr, curWordMap.get(tmpStr) - 1);
-        counter--;
-      }
-
+      // Move to the next word in the window
       curIdx += wordLength;
-      substring = s.substring(curIdx, Math.min(curIdx + wordLength, sLength));
-      wCount = wordCountMap.get(substring);
-    } while (wCount !== undefined);
+    }
   }
 
   return result;
-};
+}
